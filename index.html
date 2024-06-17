@@ -307,8 +307,9 @@
                 formatNumber(value) {
                     return numeral(value).format('0,0[.][00000]');
                 },
-                formatInput(ev) {
-                    this[ev.target.name] = this.formatNumber(this[ev.target.name])
+                formatInput(ev, target) {
+                    console.log(this[target])
+                    this[target] = this.formatNumber(this[target])
                 },
                 deformatInput(ev) {
                     this[ev.target.name] = numeral(this[ev.target.name]).value()
@@ -332,7 +333,7 @@
                         })
 
                         el.addEventListener('blur', (ev) => {
-                            vm.formatInput(ev);
+                            vm.formatInput(ev, propertyName);
                             el.value = vm[propertyName];
                         })
 
