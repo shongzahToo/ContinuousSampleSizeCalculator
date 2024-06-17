@@ -10,10 +10,11 @@
 <body>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <style>
         .row {
             display: block;
@@ -45,19 +46,19 @@
                 <div class="form-group row">
                     <label>Confidence:</label>
                     <div class="col-12 mb-3">
-                        <input type="text" class="form-control input" v-model.trim="confidenceFormatted" name="confidenceFormatted" @blur="formatInput(this.name)" @focus="deformatInput(this.name)"/> 
+                        <input type="text" class="form-control input" v-setup-input:confidence/>
                     </div>
                 </div>
                 <div class="form-group row">
                     <label>Power:</label>
                     <div class="col-12 mb-3">
-                        <input type="text" class="form-control input" v-model.trim="powerFormatted" @blur="formatInput('powerFormatted')" @focus="deformatInput('powerFormatted')"/>
+                        <input type="text" class="form-control input" v-setup-input:power/>
                     </div>
                 </div>
                 <div class="form-group row">
                     <label>MDE:</label>
                     <div class="col-12 mb-3">
-                        <input type="text" class="form-control input" v-model.trim="MDEFormatted" @blur="formatInput('MDEFormatted')" @focus="deformatInput('MDEFormatted')"/> 
+                        <input type="text" class="form-control input" v-setup-input:mde/>
                     </div>
                 </div>
                 <div class="form-group row">
@@ -74,31 +75,31 @@
                 <div class="form-group row">
                     <label>Number of Test Variants:</label>
                     <div class="col-12 mb-3">
-                        <input type="text" class="form-control input" v-model.trim="numberOfTestVariantsFormatted" @blur="formatInput('numberOfTestVariantsFormatted')"  @focus="deformatInput('numberOfTestVariantsFormatted')" />
+                        <input type="text" class="form-control input" v-setup-input:numberoftestvariants/>
                     </div>
                 </div>
                 <div class="form-group row">
                     <label>Mean Value:</label>
                     <div class="col-12 mb-3">
-                        <input type="text" class="form-control input" v-model.trim="meanValueFormatted" @blur="formatInput('meanValueFormatted')" @focus="deformatInput('meanValueFormatted')"/>
+                        <input type="text" class="form-control input" v-setup-input:meanvalue/>
                     </div>
                 </div>
                 <div class="form-group row">
                     <label>Standard Deviation:</label>
                     <div class="col-12 mb-3">
-                        <input type="text" class="form-control input" v-model.trim="standardDeviationFormatted" @blur="formatInput('standardDeviationFormatted')" @focus="deformatInput('standardDeviationFormatted')"/>
+                        <input type="text" class="form-control input" v-setup-input:standarddeviation/>
                     </div>
                 </div>
                 <div class="form-group row">
                     <label>Daily Traffic (optional):</label>
                     <div class="col-12 mb-3">
-                        <input type="text" class="form-control input" v-model.trim="dailyTraficFormatted" @blur="formatInput('dailyTraficFormatted')" @focus="deformatInput('dailyTraficFormatted')" />
+                        <input type="text" class="form-control input" v-setup-input:dailytrafic/>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div v-if="numberOfTestVariants > 1" class="row form-group form-control" style="display: flex;">
+        <div v-if="numberoftestvariants > 1" class="row form-group form-control" style="display: flex;">
             <div class="col-12 col-sm-6 form-control variant-column variant-column-right">
                 <h3>Sample size with Bonferroni-adjustments</h3>
                 <div class="form-control" style="margin-bottom: 10px;">
@@ -107,11 +108,11 @@
                 </div>
                 <div class="form-control" style="margin-bottom: 10px;">
                     <p>Sample Size Required Per Recipe:</p>
-                    <p>{{ formatNumber(Math.round(sampleSizeReqPerRecipeBON)) }}</p>
+                    <p>{{ formatNumber(Math.ceil(sampleSizeReqPerRecipeBON)) }}</p>
                 </div>
                 <div class="form-control" style="margin-bottom: 10px;">
                     <p>Total Sample Size Required:</p>
-                    <p>{{ formatNumber(Math.round(totalSampleSizeReqBON)) }}</p>
+                    <p>{{ formatNumber(Math.ceil(totalSampleSizeReqBON)) }}</p>
                 </div>
                 <div class="form-control">
                     <p>Estimated Duration:</p>
@@ -126,11 +127,11 @@
                 </div>
                 <div class="form-control" style="margin-bottom: 10px;">
                     <p>Sample Size Required Per Recipe:</p>
-                    <p>{{ formatNumber(Math.round(sampleSizeReqPerRecipe)) }}</p>
+                    <p>{{ formatNumber(Math.ceil(sampleSizeReqPerRecipe)) }}</p>
                 </div>
                 <div class="form-control" style="margin-bottom: 10px;">
                     <p>Total Sample Size Required:</p>
-                    <p>{{ formatNumber(Math.round(totalSampleSizeReq)) }}</p>
+                    <p>{{ formatNumber(Math.ceil(totalSampleSizeReq)) }}</p>
                 </div>
                 <div class="form-control">
                     <p>Estimated Duration:</p>
@@ -139,7 +140,7 @@
             </div>
         </div>
 
-        <div v-if="numberOfTestVariants <= 1" class="row form-group form-control" style="display: flex;">
+        <div v-if="numberoftestvariants <= 1" class="row form-group form-control" style="display: flex;">
             <h3 style="text-align: center; padding: 0;">Required sample size</h3>
             <div class="col-12 col-sm-6 form-control variant-column variant-column-right">
                 <div class="form-control" style="margin-bottom: 10px;">
@@ -154,7 +155,7 @@
             <div class="col-12 col-sm-6 form-control variant-column variant-column-left">
                 <div class="form-control" style="margin-bottom: 10px;">
                     <p>Total Sample Size Required:</p>
-                    <p>{{ formatNumber(Math.round(totalSampleSizeReq)) }}</p>
+                    <p>{{ formatNumber(Math.ceil(totalSampleSizeReq)) }}</p>
                 </div>
                 <div class="form-control">
                     <p>Estimated Duration:</p>
@@ -171,11 +172,11 @@
 
         document.addEventListener('keypress', (ev) => {
             if (ev.code == 'Enter') {
-                if(!document.activeElement.className.includes('no-sup')) {
+                if (!document.activeElement.className.includes('no-sup')) {
                     ev.preventDefault()
                     var inputs = Array.from(document.getElementsByClassName('input'));
                     var currentInputIndex = inputs.indexOf(ev.target);
-        
+
                     if (currentInputIndex !== -1 && currentInputIndex < inputs.length - 1) {
                         inputs[currentInputIndex + 1].focus();
                     } else if (currentInputIndex => inputs.length - 1) {
@@ -190,12 +191,12 @@
                 return {
                     confidenceFormatted: 0.95,
                     powerFormatted: 0.8,
-                    MDEFormatted: 0.05,
+                    mdeFormatted: 0.05,
                     tailsFormatted: 1,
-                    numberOfTestVariantsFormatted: 1,
-                    meanValueFormatted: 50,
-                    standardDeviationFormatted: 180,
-                    dailyTraficFormatted: 0
+                    numberoftestvariantsFormatted: 1,
+                    meanvalueFormatted: 50,
+                    standarddeviationFormatted: 180,
+                    dailytraficFormatted: 0
                 }
             },
             computed: {
@@ -205,23 +206,23 @@
                 power() {
                     return numeral(this.powerFormatted).value()
                 },
-                MDE() {
-                    return numeral(this.MDEFormatted).value()
+                mde() {
+                    return numeral(this.mdeFormatted).value()
                 },
                 tails() {
                     return numeral(this.tailsFormatted).value()
                 },
-                numberOfTestVariants() {
-                    return numeral(this.numberOfTestVariantsFormatted).value()
+                numberoftestvariants() {
+                    return numeral(this.numberoftestvariantsFormatted).value()
                 },
-                meanValue() {
-                    return numeral(this.meanValueFormatted).value()
+                meanvalue() {
+                    return numeral(this.meanvalueFormatted).value()
                 },
-                standardDeviation() {
-                    return numeral(this.standardDeviationFormatted).value()
+                standarddeviation() {
+                    return numeral(this.standarddeviationFormatted).value()
                 },
-                dailyTrafic() {
-                    return numeral(this.dailyTraficFormatted).value()
+                dailytrafic() {
+                    return numeral(this.dailytraficFormatted).value()
                 },
                 zAlpha() {
                     const tailProbability = (1 - this.confidence) / this.tails;
@@ -231,29 +232,29 @@
                     return this.NORMSINV(this.power);
                 },
                 estimatedTestAverage() {
-                    return this.meanValue * (1 + this.MDE);
+                    return this.meanvalue * (1 + this.mde);
                 },
                 sampleSizeReqPerRecipe() {
-                    return Math.pow(this.zAlpha + this.zBeta, 2) * 2 * Math.pow(this.standardDeviation, 2) / Math.pow(this.estimatedTestAverage - this.meanValue, 2);
+                    return Math.pow(this.zAlpha + this.zBeta, 2) * 2 * Math.pow(this.standarddeviation, 2) / Math.pow(this.estimatedTestAverage - this.meanvalue, 2);
                 },
                 totalSampleSizeReq() {
-                    return this.sampleSizeReqPerRecipe * (this.numberOfTestVariants + 1);
+                    return this.sampleSizeReqPerRecipe * (this.numberoftestvariants + 1);
                 },
                 estimatedDuration() {
-                    return (this.dailyTrafic == 0 || this.dailyTrafic == '') ? 'You must input a daily traffic value to receive an estimated duration' : Math.ceil(this.totalSampleSizeReq / this.dailyTrafic) + ' Days';
+                    return (this.dailytrafic == 0 || this.dailytrafic == '') ? 'You must input a daily traffic value to receive an estimated duration' : Math.ceil(this.totalSampleSizeReq / this.dailytrafic) + ' Days';
                 },
                 zAlphaBON() {
-                    const tailProbability = (1 - this.confidence) / this.tails / this.numberOfTestVariants;
+                    const tailProbability = (1 - this.confidence) / this.tails / this.numberoftestvariants;
                     return this.NORMSINV(1 - tailProbability);
                 },
                 sampleSizeReqPerRecipeBON() {
-                    return Math.pow(this.zAlphaBON + this.zBeta, 2) * 2 * Math.pow(this.standardDeviation, 2) / Math.pow(this.estimatedTestAverage - this.meanValue, 2);
+                    return Math.pow(this.zAlphaBON + this.zBeta, 2) * 2 * Math.pow(this.standarddeviation, 2) / Math.pow(this.estimatedTestAverage - this.meanvalue, 2);
                 },
                 totalSampleSizeReqBON() {
-                    return this.sampleSizeReqPerRecipeBON * (this.numberOfTestVariants + 1);
+                    return this.sampleSizeReqPerRecipeBON * (this.numberoftestvariants + 1);
                 },
                 estimatedDurationBON() {
-                    return (this.dailyTrafic == 0 || this.dailyTrafic == '') ? 'You must input a daily traffic value to receive an estimated duration' : Math.ceil(this.totalSampleSizeReqBON / this.dailyTrafic) + ' Days';
+                    return (this.dailytrafic == 0 || this.dailytrafic == '') ? 'You must input a daily traffic value to receive an estimated duration' : Math.ceil(this.totalSampleSizeReqBON / this.dailytrafic) + ' Days';
                 }
             },
             methods: {
@@ -304,16 +305,46 @@
                     throw new Error("Argument out of range.");
                 },
                 formatNumber(value) {
-                    return numeral(value).format('0,0[.][000]');
+                    return numeral(value).format('0,0[.][00000]');
                 },
-                formatInput(field) {
-                    this[field] = numeral(this[field]).format('0,0[.][000000]');
+                formatInput(ev) {
+                    this[ev.target.name] = this.formatNumber(this[ev.target.name])
                 },
-                deformatInput(field) {
-                    this[field] = numeral(this[field]).value()
+                deformatInput(ev) {
+                    this[ev.target.name] = numeral(this[ev.target.name]).value()
+                },
+                updateInput(ev, target) {
+                    this[target] = ev.target.value.trim()
+                }
+            },
+            directives: {
+                setupInput: {
+                    mounted(el, binding, vnode) {
+                        const propertyName = binding.arg + 'Formatted';
+                        const vm = vnode.ctx.ctx;
+
+
+                        el.value = vm[propertyName];
+
+
+                        el.addEventListener('input', (ev) => {
+                            vm.updateInput(ev, propertyName)
+                        })
+
+                        el.addEventListener('blur', (ev) => {
+                            vm.formatInput(ev);
+                            el.value = vm[propertyName];
+                        })
+
+                        el.addEventListener('focus', (ev) => {
+                            vm.deformatInput(ev);
+                            el.value = vm[propertyName];
+                        })  
+                    }
                 }
             }
         }).mount('#app')
     </script>
 </body>
+
 </html>
