@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+</head>
+
+<body>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <style>
+        .row {
+            display: block;
+            margin: 10px;
+        }
+
+        .variant-column {
+            width: 100%;
+            margin: 0;
+        }
+
+        @media (min-width: 576px) {
+            .variant-column {
+                width: 48.5%;
+            }
+
+            .variant-column-right {
+                margin-right: 1.25%;
+            }
+
+            .variant-column-left {
+                margin-left: 1.25%;
+            }
+        }
+    </style>
+    <div id="app" class="container">
+        <div class="row form-group form-control" style="display: flex;">
+            <div class="col-12 col-sm-6">
+                <div class="form-group row">
+                    <label>Confidence:</label>
+                    <div class="col-12 mb-3">
+                        <input type="text" class="form-control input" v-model.trim="confidenceFormatted" name="confidenceFormatted" @blur="formatInput(this.name)" @focus="deformatInput(this.name)"/> 
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label>Power:</label>
+                    <div class="col-12 mb-3">
+                        <input type="text" class="form-control input" v-model.trim="powerFormatted" @blur="formatInput('powerFormatted')" @focus="deformatInput('powerFormatted')"/>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label>MDE:</label>
+                    <div class="col-12 mb-3">
+                        <input type="text" class="form-control input" v-model.trim="MDEFormatted" @blur="formatInput('MDEFormatted')" @focus="deformatInput('MDEFormatted')"/> 
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label>Tails (1 or 2):</label>
+                    <div class="col-12 mb-3">
+                        <select class="form-control input no-sup" v-model.trim="tailsFormatted">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 form-group">
+                <div class="form-group row">
+                    <label>Number of Test Variants:</label>
+                    <div class="col-12 mb-3">
+                        <input type="text" class="form-control input" v-model.trim="numberOfTestVariantsFormatted" @blur="formatInput('numberOfTestVariantsFormatted')"  @focus="deformatInput('numberOfTestVariantsFormatted')" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label>Mean Value:</label>
+                    <div class="col-12 mb-3">
+                        <input type="text" class="form-control input" v-model.trim="meanValueFormatted" @blur="formatInput('meanValueFormatted')" @focus="deformatInput('meanValueFormatted')"/>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label>Standard Deviation:</label>
+                    <div class="col-12 mb-3">
+                        <input type="text" class="form-control input" v-model.trim="standardDeviationFormatted" @blur="formatInput('standardDeviationFormatted')" @focus="deformatInput('standardDeviationFormatted')"/>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label>Daily Traffic (optional):</label>
+                    <div class="col-12 mb-3">
+                        <input type="text" class="form-control input" v-model.trim="dailyTraficFormatted" @blur="formatInput('dailyTraficFormatted')" @focus="deformatInput('dailyTraficFormatted')" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div v-if="numberOfTestVariants > 1" class="row form-group form-control" style="display: flex;">
+            <div class="col-12 col-sm-6 form-control variant-column variant-column-right">
+                <h3>Sample size with Bonferroni-adjustments</h3>
+                <div class="form-control" style="margin-bottom: 10px;">
+                    <p>Estimated Test Average:</p>
+                    <p>{{ formatNumber(estimatedTestAverage) }}</p>
+                </div>
+                <div class="form-control" style="margin-bottom: 10px;">
+                    <p>Sample Size Required Per Recipe:</p>
+                    <p>{{ formatNumber(Math.round(sampleSizeReqPerRecipeBON)) }}</p>
+                </div>
+                <div class="form-control" style="margin-bottom: 10px;">
+                    <p>Total Sample Size Required:</p>
+                    <p>{{ formatNumber(Math.round(totalSampleSizeReqBON)) }}</p>
+                </div>
+                <div class="form-control">
+                    <p>Estimated Duration:</p>
+                    <p>{{ formatNumber(estimatedDurationBON) }}</p>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 form-control variant-column variant-column-left">
+                <h3>Sample size without Bonferroni-adjustments</h3>
+                <div class="form-control" style="margin-bottom: 10px;">
+                    <p>Estimated Test Average:</p>
+                    <p>{{ formatNumber(estimatedTestAverage) }}</p>
+                </div>
+                <div class="form-control" style="margin-bottom: 10px;">
+                    <p>Sample Size Required Per Recipe:</p>
+                    <p>{{ formatNumber(Math.round(sampleSizeReqPerRecipe)) }}</p>
+                </div>
+                <div class="form-control" style="margin-bottom: 10px;">
+                    <p>Total Sample Size Required:</p>
+                    <p>{{ formatNumber(Math.round(totalSampleSizeReq)) }}</p>
+                </div>
+                <div class="form-control">
+                    <p>Estimated Duration:</p>
+                    <p>{{ formatNumber(estimatedDuration) }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div v-if="numberOfTestVariants <= 1" class="row form-group form-control" style="display: flex;">
+            <h3 style="text-align: center; padding: 0;">Required sample size</h3>
+            <div class="col-12 col-sm-6 form-control variant-column variant-column-right">
+                <div class="form-control" style="margin-bottom: 10px;">
+                    <p>Estimated Test Average:</p>
+                    <p>{{ formatNumber(estimatedTestAverage) }}</p>
+                </div>
+                <div class="form-control" style="margin-bottom: 10px;">
+                    <p>Sample Size Required Per Recipe:</p>
+                    <p>{{ formatNumber(Math.round(sampleSizeReqPerRecipe)) }}</p>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 form-control variant-column variant-column-left">
+                <div class="form-control" style="margin-bottom: 10px;">
+                    <p>Total Sample Size Required:</p>
+                    <p>{{ formatNumber(Math.round(totalSampleSizeReq)) }}</p>
+                </div>
+                <div class="form-control">
+                    <p>Estimated Duration:</p>
+                    <p>{{ formatNumber(estimatedDuration) }}</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const { createApp } = Vue
+
+
+        document.addEventListener('keypress', (ev) => {
+            if (ev.code == 'Enter') {
+                if(!document.activeElement.className.includes('no-sup')) {
+                    ev.preventDefault()
+                    var inputs = Array.from(document.getElementsByClassName('input'));
+                    var currentInputIndex = inputs.indexOf(ev.target);
+        
+                    if (currentInputIndex !== -1 && currentInputIndex < inputs.length - 1) {
+                        inputs[currentInputIndex + 1].focus();
+                    } else if (currentInputIndex => inputs.length - 1) {
+                        inputs[0].focus();
+                    }
+                }
+            }
+        })
+
+        createApp({
+            data() {
+                return {
+                    confidenceFormatted: 0.95,
+                    powerFormatted: 0.8,
+                    MDEFormatted: 0.05,
+                    tailsFormatted: 1,
+                    numberOfTestVariantsFormatted: 1,
+                    meanValueFormatted: 50,
+                    standardDeviationFormatted: 180,
+                    dailyTraficFormatted: 0
+                }
+            },
+            computed: {
+                confidence() {
+                    return numeral(this.confidenceFormatted).value()
+                },
+                power() {
+                    return numeral(this.powerFormatted).value()
+                },
+                MDE() {
+                    return numeral(this.MDEFormatted).value()
+                },
+                tails() {
+                    return numeral(this.tailsFormatted).value()
+                },
+                numberOfTestVariants() {
+                    return numeral(this.numberOfTestVariantsFormatted).value()
+                },
+                meanValue() {
+                    return numeral(this.meanValueFormatted).value()
+                },
+                standardDeviation() {
+                    return numeral(this.standardDeviationFormatted).value()
+                },
+                dailyTrafic() {
+                    return numeral(this.dailyTraficFormatted).value()
+                },
+                zAlpha() {
+                    const tailProbability = (1 - this.confidence) / this.tails;
+                    return this.NORMSINV(1 - tailProbability);
+                },
+                zBeta() {
+                    return this.NORMSINV(this.power);
+                },
+                estimatedTestAverage() {
+                    return this.meanValue * (1 + this.MDE);
+                },
+                sampleSizeReqPerRecipe() {
+                    return Math.pow(this.zAlpha + this.zBeta, 2) * 2 * Math.pow(this.standardDeviation, 2) / Math.pow(this.estimatedTestAverage - this.meanValue, 2);
+                },
+                totalSampleSizeReq() {
+                    return this.sampleSizeReqPerRecipe * (this.numberOfTestVariants + 1);
+                },
+                estimatedDuration() {
+                    return (this.dailyTrafic == 0 || this.dailyTrafic == '') ? 'You must input a daily traffic value to receive an estimated duration' : Math.ceil(this.totalSampleSizeReq / this.dailyTrafic) + ' Days';
+                },
+                zAlphaBON() {
+                    const tailProbability = (1 - this.confidence) / this.tails / this.numberOfTestVariants;
+                    return this.NORMSINV(1 - tailProbability);
+                },
+                sampleSizeReqPerRecipeBON() {
+                    return Math.pow(this.zAlphaBON + this.zBeta, 2) * 2 * Math.pow(this.standardDeviation, 2) / Math.pow(this.estimatedTestAverage - this.meanValue, 2);
+                },
+                totalSampleSizeReqBON() {
+                    return this.sampleSizeReqPerRecipeBON * (this.numberOfTestVariants + 1);
+                },
+                estimatedDurationBON() {
+                    return (this.dailyTrafic == 0 || this.dailyTrafic == '') ? 'You must input a daily traffic value to receive an estimated duration' : Math.ceil(this.totalSampleSizeReqBON / this.dailyTrafic) + ' Days';
+                }
+            },
+            methods: {
+                NORMSINV(p) {
+                    const a1 = -3.969683028665376e+01;
+                    const a2 = 2.209460984245205e+02;
+                    const a3 = -2.759285104469687e+02;
+                    const a4 = 1.383577518672690e+02;
+                    const a5 = -3.066479806614716e+01;
+                    const a6 = 2.506628277459239e+00;
+
+                    const b1 = -5.447609879822406e+01;
+                    const b2 = 1.615858368580409e+02;
+                    const b3 = -1.556989798598866e+02;
+                    const b4 = 6.680131188771972e+01;
+                    const b5 = -1.328068155288572e+01;
+
+                    const c1 = -7.784894002430293e-03;
+                    const c2 = -3.223964580411365e-01;
+                    const c3 = -2.400758277161838e+00;
+                    const c4 = -2.549732539343734e+00;
+                    const c5 = 4.374664141464968e+00;
+                    const c6 = 2.938163982698783e+00;
+
+                    const d1 = 7.784695709041462e-03;
+                    const d2 = 3.224671290700398e-01;
+                    const d3 = 2.445134137142996e+00;
+                    const d4 = 3.754408661907416e+00;
+
+                    const p_low = 0.02425;
+                    const p_high = 1 - p_low;
+
+                    let q, r;
+                    if (0 < p && p < p_low) {
+                        q = Math.sqrt(-2 * Math.log(p));
+                        return (((((c1 * q + c2) * q + c3) * q + c4) * q + c5) * q + c6) /
+                            ((((d1 * q + d2) * q + d3) * q + d4) * q + 1);
+                    } else if (p_low <= p && p <= p_high) {
+                        q = p - 0.5;
+                        r = q * q;
+                        return (((((a1 * r + a2) * r + a3) * r + a4) * r + a5) * r + a6) * q /
+                            (((((b1 * r + b2) * r + b3) * r + b4) * r + b5) * r + 1);
+                    } else if (p_high < p && p < 1) {
+                        q = Math.sqrt(-2 * Math.log(1 - p));
+                        return -(((((c1 * q + c2) * q + c3) * q + c4) * q + c5) * q + c6) /
+                            ((((d1 * q + d2) * q + d3) * q + d4) * q + 1);
+                    }
+                    throw new Error("Argument out of range.");
+                },
+                formatNumber(value) {
+                    return numeral(value).format('0,0[.][000]');
+                },
+                formatInput(field) {
+                    this[field] = numeral(this[field]).format('0,0[.][000000]');
+                },
+                deformatInput(field) {
+                    this[field] = numeral(this[field]).value()
+                }
+            }
+        }).mount('#app')
+    </script>
+</body>
+</html>
