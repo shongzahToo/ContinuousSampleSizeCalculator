@@ -44,21 +44,21 @@
         <div class="row form-group form-control" style="display: flex;">
             <div class="col-12 col-sm-6">
                 <div class="form-group row">
-                    <label>Confidence:</label>
+                    <label>Confidence ( 1 - &alpha; ):</label>
                     <div class="col-12 mb-3">
-                        <input type="text" class="form-control input" v-setup-input:confidence/>
+                        <input type="text" class="form-control input" v-setup-input:confidence.percent/>
                     </div>
                 </div>
                 <div class="form-group row">
                     <label>Power:</label>
                     <div class="col-12 mb-3">
-                        <input type="text" class="form-control input" v-setup-input:power/>
+                        <input type="text" class="form-control input" v-setup-input:power.percent/>
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label>MDE:</label>
+                    <label>Estimated Lift Percentage:</label>
                     <div class="col-12 mb-3">
-                        <input type="text" class="form-control input" v-setup-input:mde/>
+                        <input type="text" class="form-control input" v-setup-input:mde.percent/>
                     </div>
                 </div>
                 <div class="form-group row">
@@ -189,9 +189,9 @@
         createApp({
             data() {
                 return {
-                    confidenceFormatted: 0.95,
-                    powerFormatted: 0.8,
-                    mdeFormatted: 0.05,
+                    confidenceFormatted: 95,
+                    powerFormatted: 80,
+                    mdeFormatted: 5,
                     tailsFormatted: 1,
                     numberoftestvariantsFormatted: 1,
                     meanvalueFormatted: 50,
@@ -201,13 +201,13 @@
             },
             computed: {
                 confidence() {
-                    return numeral(this.confidenceFormatted).value()
+                    return numeral(this.confidenceFormatted.toString().replace('%', '')).value() / 100
                 },
                 power() {
-                    return numeral(this.powerFormatted).value()
+                    return numeral(this.powerFormatted.toString().replace('%', '')).value() / 100
                 },
                 mde() {
-                    return numeral(this.mdeFormatted).value()
+                    return numeral(this.mdeFormatted.toString().replace('%', '')).value() / 100
                 },
                 tails() {
                     return numeral(this.tailsFormatted).value()
@@ -307,12 +307,11 @@
                 formatNumber(value) {
                     return numeral(value).format('0,0[.][00000]');
                 },
-                formatInput(ev, target) {
-                    console.log(this[target])
-                    this[target] = this.formatNumber(this[target])
+                formatInput(target, addPercent) {
+                    this[target] = this.formatNumber(this[target]) + (addPercent ? '%' : '')
                 },
-                deformatInput(ev) {
-                    this[ev.target.name] = numeral(this[ev.target.name]).value()
+                deformatInput(target, percent) {
+                    this[target] = numeral(this[target]).value() * (percent ? 100 : 1)
                 },
                 updateInput(ev, target) {
                     this[target] = ev.target.value.trim()
@@ -323,7 +322,7 @@
                     mounted(el, binding, vnode) {
                         const propertyName = binding.arg + 'Formatted';
                         const vm = vnode.ctx.ctx;
-
+                        vm.formatInput(propertyName, binding.modifiers.percent)
 
                         el.value = vm[propertyName];
 
@@ -332,13 +331,13 @@
                             vm.updateInput(ev, propertyName)
                         })
 
-                        el.addEventListener('blur', (ev) => {
-                            vm.formatInput(ev, propertyName);
+                        el.addEventListener('blur', () => {
+                            vm.formatInput(propertyName, binding.modifiers.percent);
                             el.value = vm[propertyName];
                         })
 
-                        el.addEventListener('focus', (ev) => {
-                            vm.deformatInput(ev);
+                        el.addEventListener('focus', () => {
+                            vm.deformatInput(propertyName, binding.modifiers.percent);
                             el.value = vm[propertyName];
                         })  
                     }
