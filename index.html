@@ -116,7 +116,7 @@
                 </div>
                 <div class="form-control">
                     <p>Estimated Duration:</p>
-                    <p>{{ formatNumber(estimatedDurationBON) }}</p>
+                    <p>{{ estimatedDurationBON}}</p>
                 </div>
             </div>
             <div class="col-12 col-sm-6 form-control variant-column variant-column-left">
@@ -135,7 +135,7 @@
                 </div>
                 <div class="form-control">
                     <p>Estimated Duration:</p>
-                    <p>{{ formatNumber(estimatedDuration) }}</p>
+                    <p>{{ estimatedDuration }}</p>
                 </div>
             </div>
         </div>
@@ -159,7 +159,7 @@
                 </div>
                 <div class="form-control">
                     <p>Estimated Duration:</p>
-                    <p>{{ formatNumber(estimatedDuration) }}</p>
+                    <p>{{ estimatedDuration }}</p>
                 </div>
             </div>
         </div>
@@ -241,7 +241,7 @@
                     return this.sampleSizeReqPerRecipe * (this.numberoftestvariants + 1);
                 },
                 estimatedDuration() {
-                    return (this.dailytrafic == 0 || this.dailytrafic == '') ? 'You must input a daily traffic value to receive an estimated duration' : Math.ceil(this.totalSampleSizeReq / this.dailytrafic) + ' Days';
+                    return (this.dailytrafic == 0 || this.dailytrafic == '') ? 'You must input a daily traffic value to receive an estimated duration' : this.formatNumber(Math.ceil(this.totalSampleSizeReq / this.dailytrafic)) + ' Days';
                 },
                 zAlphaBON() {
                     const tailProbability = (1 - this.confidence) / this.tails / this.numberoftestvariants;
@@ -254,7 +254,7 @@
                     return this.sampleSizeReqPerRecipeBON * (this.numberoftestvariants + 1);
                 },
                 estimatedDurationBON() {
-                    return (this.dailytrafic == 0 || this.dailytrafic == '') ? 'You must input a daily traffic value to receive an estimated duration' : Math.ceil(this.totalSampleSizeReqBON / this.dailytrafic) + ' Days';
+                    return (this.dailytrafic == 0 || this.dailytrafic == '') ? 'You must input a daily traffic value to receive an estimated duration' : this.formatNumber(Math.ceil(this.totalSampleSizeReqBON / this.dailytrafic)) + ' Days';
                 }
             },
             methods: {
