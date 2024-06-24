@@ -41,26 +41,12 @@
         }
     </style>
     <div id="app" class="container">
+        
         <div class="row form-group form-control" style="display: flex;">
             <div class="col-12 col-sm-6">
-                <div class="form-group row">
-                    <label>Confidence ( 1 - &alpha; ):</label>
-                    <div class="col-12 mb-3">
-                        <input type="text" class="form-control input" v-setup-input:confidence.percent/>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label>Power:</label>
-                    <div class="col-12 mb-3">
-                        <input type="text" class="form-control input" v-setup-input:power.percent/>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label>Estimated Lift Percentage:</label>
-                    <div class="col-12 mb-3">
-                        <input type="text" class="form-control input" v-setup-input:mde.percent/>
-                    </div>
-                </div>
+                <input-field title="Confidence ( 1 - &alpha; ):" v-setup-component-input:confidence.percent></input-field>
+                <input-field title="Power:" v-setup-component-input:power.percent></input-field>
+                <input-field title="Estimated Lift Percentage:" v-setup-component-input:mde.percent></input-field>
                 <div class="form-group row">
                     <label>Tails (1 or 2):</label>
                     <div class="col-12 mb-3">
@@ -72,30 +58,10 @@
                 </div>
             </div>
             <div class="col-12 col-sm-6 form-group">
-                <div class="form-group row">
-                    <label>Number of Test Variants:</label>
-                    <div class="col-12 mb-3">
-                        <input type="text" class="form-control input" v-setup-input:numberoftestvariants/>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label>Mean Value:</label>
-                    <div class="col-12 mb-3">
-                        <input type="text" class="form-control input" v-setup-input:meanvalue/>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label>Standard Deviation:</label>
-                    <div class="col-12 mb-3">
-                        <input type="text" class="form-control input" v-setup-input:standarddeviation/>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label>Daily Traffic (optional):</label>
-                    <div class="col-12 mb-3">
-                        <input type="text" class="form-control input" v-setup-input:dailytrafic/>
-                    </div>
-                </div>
+                <input-field title="Number of Test Variants:" v-setup-component-input:numberoftestvariants></input-field>
+                <input-field title="Mean Value:" v-setup-component-input:meanvalue></input-field>
+                <input-field title="Standard Deviation:" v-setup-component-input:standarddeviation></input-field>
+                <input-field title="Daily Traffic (optional):" v-setup-component-input:dailytrafic></input-field>
             </div>
         </div>
 
@@ -170,6 +136,8 @@
         const { createApp } = Vue
 
 
+
+
         document.addEventListener('keypress', (ev) => {
             if (ev.code == 'Enter') {
                 if (!document.activeElement.className.includes('no-sup')) {
@@ -186,7 +154,7 @@
             }
         })
 
-        createApp({
+        const app = createApp({
             data() {
                 return {
                     confidenceFormatted: 95,
@@ -318,11 +286,13 @@
                 }
             },
             directives: {
-                setupInput: {
+                setupComponentInput: {
                     mounted(el, binding, vnode) {
                         const propertyName = binding.arg + 'Formatted';
-                        const vm = vnode.ctx.ctx;
+                        const vm = vnode.ctx.parent.ctx;
                         vm.formatInput(propertyName, binding.modifiers.percent)
+                        el = el.querySelector('div').querySelector('input')
+                        console.log(el)
 
                         el.value = vm[propertyName];
 
@@ -339,11 +309,27 @@
                         el.addEventListener('focus', () => {
                             vm.deformatInput(propertyName, binding.modifiers.percent);
                             el.value = vm[propertyName];
-                        })  
+                        })
                     }
                 }
             }
-        }).mount('#app')
+        })
+
+
+        app.component('input-field', {
+            template: `<div class="form-group row" v-setup-component-input:confidence.percent>
+                            <label>{{ title }}</label>
+                            <div class="col-12 mb-3">
+                                <input type="text" class="form-control input"/>
+                            </div>
+                        </div>
+                        `,
+            props: [
+                'title'
+            ]
+        })
+
+        app.mount('#app')
     </script>
 </body>
 
