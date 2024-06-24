@@ -68,65 +68,29 @@
         <div v-if="numberoftestvariants > 1" class="row form-group form-control" style="display: flex;">
             <div class="col-12 col-sm-6 form-control variant-column variant-column-right">
                 <h3>Sample size with Bonferroni-adjustments</h3>
-                <div class="form-control" style="margin-bottom: 10px;">
-                    <p>Estimated Test Average:</p>
-                    <p>{{ formatNumber(estimatedTestAverage) }}</p>
-                </div>
-                <div class="form-control" style="margin-bottom: 10px;">
-                    <p>Sample Size Required Per Recipe:</p>
-                    <p>{{ formatNumber(Math.ceil(sampleSizeReqPerRecipeBON)) }}</p>
-                </div>
-                <div class="form-control" style="margin-bottom: 10px;">
-                    <p>Total Sample Size Required:</p>
-                    <p>{{ formatNumber(Math.ceil(totalSampleSizeReqBON)) }}</p>
-                </div>
-                <div class="form-control">
-                    <p>Estimated Duration:</p>
-                    <p>{{ estimatedDurationBON}}</p>
-                </div>
+                <output-field title="Estimated Test Average:" :output-value="formatNumber(estimatedTestAverage)"></output-field>
+                <output-field title="Sample Size Required Per Recipe:" :output-value="formatNumber(Math.ceil(sampleSizeReqPerRecipeBON))"></output-field>
+                <output-field title="Total Sample Size Required:" :output-value="formatNumber(Math.ceil(totalSampleSizeReqBON))"></output-field>
+                <output-field title="Estimated Duration:" :output-value="estimatedDurationBON"></output-field>
             </div>
             <div class="col-12 col-sm-6 form-control variant-column variant-column-left">
                 <h3>Sample size without Bonferroni-adjustments</h3>
-                <div class="form-control" style="margin-bottom: 10px;">
-                    <p>Estimated Test Average:</p>
-                    <p>{{ formatNumber(estimatedTestAverage) }}</p>
-                </div>
-                <div class="form-control" style="margin-bottom: 10px;">
-                    <p>Sample Size Required Per Recipe:</p>
-                    <p>{{ formatNumber(Math.ceil(sampleSizeReqPerRecipe)) }}</p>
-                </div>
-                <div class="form-control" style="margin-bottom: 10px;">
-                    <p>Total Sample Size Required:</p>
-                    <p>{{ formatNumber(Math.ceil(totalSampleSizeReq)) }}</p>
-                </div>
-                <div class="form-control">
-                    <p>Estimated Duration:</p>
-                    <p>{{ estimatedDuration }}</p>
-                </div>
+                <output-field title="Estimated Test Average:" :output-value="formatNumber(estimatedTestAverage)"></output-field>
+                <output-field title="Sample Size Required Per Recipe:" :output-value="formatNumber(Math.ceil(sampleSizeReqPerRecipe))"></output-field>
+                <output-field title="Total Sample Size Required:" :output-value="formatNumber(Math.ceil(totalSampleSizeReq))"></output-field>
+                <output-field title="Estimated Duration:" :output-value="estimatedDuration"></output-field>
             </div>
         </div>
 
         <div v-if="numberoftestvariants <= 1" class="row form-group form-control" style="display: flex;">
             <h3 style="text-align: center; padding: 0;">Required sample size</h3>
             <div class="col-12 col-sm-6 form-control variant-column variant-column-right">
-                <div class="form-control" style="margin-bottom: 10px;">
-                    <p>Estimated Test Average:</p>
-                    <p>{{ formatNumber(estimatedTestAverage) }}</p>
-                </div>
-                <div class="form-control" style="margin-bottom: 10px;">
-                    <p>Sample Size Required Per Recipe:</p>
-                    <p>{{ formatNumber(Math.round(sampleSizeReqPerRecipe)) }}</p>
-                </div>
+                <output-field title="Estimated Test Average:" :output-value="formatNumber(estimatedTestAverage)"></output-field>
+                <output-field title="Sample Size Required Per Recipe:" :output-value="formatNumber(Math.ceil(sampleSizeReqPerRecipe))"></output-field>
             </div>
             <div class="col-12 col-sm-6 form-control variant-column variant-column-left">
-                <div class="form-control" style="margin-bottom: 10px;">
-                    <p>Total Sample Size Required:</p>
-                    <p>{{ formatNumber(Math.ceil(totalSampleSizeReq)) }}</p>
-                </div>
-                <div class="form-control">
-                    <p>Estimated Duration:</p>
-                    <p>{{ estimatedDuration }}</p>
-                </div>
+                <output-field title="Total Sample Size Required:" :output-value="formatNumber(Math.ceil(totalSampleSizeReq))"></output-field>
+                <output-field title="Estimated Duration:" :output-value="estimatedDuration"></output-field>
             </div>
         </div>
 
@@ -134,8 +98,6 @@
 
     <script>
         const { createApp } = Vue
-
-
 
 
         document.addEventListener('keypress', (ev) => {
@@ -326,6 +288,16 @@
                         `,
             props: [
                 'title'
+            ]
+        })
+
+        app.component('output-field', {
+            template: `<div class="form-control" style="margin-bottom: 10px;">
+                            <p>{{ title }}</p>
+                            <p>{{ outputValue }}</p>
+                        </div>`,
+            props: [
+                'title', 'outputValue'
             ]
         })
 
