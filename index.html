@@ -41,10 +41,11 @@
         }
     </style>
     <div id="app" class="container">
-        
+
         <div class="row form-group form-control" style="display: flex;">
             <div class="col-12 col-sm-6">
-                <input-field title="Confidence ( 1 - &alpha; ):" v-setup-component-input:confidence.percent></input-field>
+                <input-field title="Confidence ( 1 - &alpha; ):"
+                    v-setup-component-input:confidence.percent></input-field>
                 <input-field title="Power:" v-setup-component-input:power.percent></input-field>
                 <input-field title="Estimated Lift Percentage:" v-setup-component-input:mde.percent></input-field>
                 <div class="form-group row">
@@ -58,7 +59,8 @@
                 </div>
             </div>
             <div class="col-12 col-sm-6 form-group">
-                <input-field title="Number of Test Variants:" v-setup-component-input:numberoftestvariants></input-field>
+                <input-field title="Number of Test Variants:"
+                    v-setup-component-input:numberoftestvariants></input-field>
                 <input-field title="Mean Value:" v-setup-component-input:meanvalue></input-field>
                 <input-field title="Standard Deviation:" v-setup-component-input:standarddeviation></input-field>
                 <input-field title="Daily Traffic (optional):" v-setup-component-input:dailytrafic></input-field>
@@ -68,16 +70,22 @@
         <div v-if="numberoftestvariants > 1" class="row form-group form-control" style="display: flex;">
             <div class="col-12 col-sm-6 form-control variant-column variant-column-right">
                 <h3>Sample size with Bonferroni-adjustments</h3>
-                <output-field title="Estimated Test Average:" :output-value="formatNumber(estimatedTestAverage)"></output-field>
-                <output-field title="Sample Size Required Per Recipe:" :output-value="formatNumber(Math.ceil(sampleSizeReqPerRecipeBON))"></output-field>
-                <output-field title="Total Sample Size Required:" :output-value="formatNumber(Math.ceil(totalSampleSizeReqBON))"></output-field>
+                <output-field title="Estimated Test Average:"
+                    :output-value="formatNumber(estimatedTestAverage)"></output-field>
+                <output-field title="Sample Size Required Per Recipe:"
+                    :output-value="formatNumber(Math.ceil(sampleSizeReqPerRecipeBON))"></output-field>
+                <output-field title="Total Sample Size Required:"
+                    :output-value="formatNumber(Math.ceil(totalSampleSizeReqBON))"></output-field>
                 <output-field title="Estimated Duration:" :output-value="estimatedDurationBON"></output-field>
             </div>
             <div class="col-12 col-sm-6 form-control variant-column variant-column-left">
                 <h3>Sample size without Bonferroni-adjustments</h3>
-                <output-field title="Estimated Test Average:" :output-value="formatNumber(estimatedTestAverage)"></output-field>
-                <output-field title="Sample Size Required Per Recipe:" :output-value="formatNumber(Math.ceil(sampleSizeReqPerRecipe))"></output-field>
-                <output-field title="Total Sample Size Required:" :output-value="formatNumber(Math.ceil(totalSampleSizeReq))"></output-field>
+                <output-field title="Estimated Test Average:"
+                    :output-value="formatNumber(estimatedTestAverage)"></output-field>
+                <output-field title="Sample Size Required Per Recipe:"
+                    :output-value="formatNumber(Math.ceil(sampleSizeReqPerRecipe))"></output-field>
+                <output-field title="Total Sample Size Required:"
+                    :output-value="formatNumber(Math.ceil(totalSampleSizeReq))"></output-field>
                 <output-field title="Estimated Duration:" :output-value="estimatedDuration"></output-field>
             </div>
         </div>
@@ -85,11 +93,14 @@
         <div v-if="numberoftestvariants <= 1" class="row form-group form-control" style="display: flex;">
             <h3 style="text-align: center; padding: 0;">Required sample size</h3>
             <div class="col-12 col-sm-6 form-control variant-column variant-column-right">
-                <output-field title="Estimated Test Average:" :output-value="formatNumber(estimatedTestAverage)"></output-field>
-                <output-field title="Sample Size Required Per Recipe:" :output-value="formatNumber(Math.ceil(sampleSizeReqPerRecipe))"></output-field>
+                <output-field title="Estimated Test Average:"
+                    :output-value="formatNumber(estimatedTestAverage)"></output-field>
+                <output-field title="Sample Size Required Per Recipe:"
+                    :output-value="formatNumber(Math.ceil(sampleSizeReqPerRecipe))"></output-field>
             </div>
             <div class="col-12 col-sm-6 form-control variant-column variant-column-left">
-                <output-field title="Total Sample Size Required:" :output-value="formatNumber(Math.ceil(totalSampleSizeReq))"></output-field>
+                <output-field title="Total Sample Size Required:"
+                    :output-value="formatNumber(Math.ceil(totalSampleSizeReq))"></output-field>
                 <output-field title="Estimated Duration:" :output-value="estimatedDuration"></output-field>
             </div>
         </div>
@@ -119,9 +130,9 @@
         const app = createApp({
             data() {
                 return {
-                    confidenceFormatted: 95,
-                    powerFormatted: 80,
-                    mdeFormatted: 5,
+                    confidenceFormatted: '95%',
+                    powerFormatted: '80%',
+                    mdeFormatted: '5%',
                     tailsFormatted: 1,
                     numberoftestvariantsFormatted: 1,
                     meanvalueFormatted: 50,
@@ -131,13 +142,18 @@
             },
             computed: {
                 confidence() {
-                    return numeral(this.confidenceFormatted.toString().replace('%', '')).value() / 100
+                    let val = numeral(this.confidenceFormatted).value()
+                    if (val == 0 || val == undefined) {
+                        return 0.001
+                    } else {
+                        return val
+                    }
                 },
                 power() {
-                    return numeral(this.powerFormatted.toString().replace('%', '')).value() / 100
+                    return numeral(this.powerFormatted).value()
                 },
                 mde() {
-                    return numeral(this.mdeFormatted.toString().replace('%', '')).value() / 100
+                    return numeral(this.mdeFormatted).value()
                 },
                 tails() {
                     return numeral(this.tailsFormatted).value()
@@ -232,19 +248,40 @@
                         return -(((((c1 * q + c2) * q + c3) * q + c4) * q + c5) * q + c6) /
                             ((((d1 * q + d2) * q + d3) * q + d4) * q + 1);
                     }
-                    throw new Error("Argument out of range.");
+                    throw new Error("Argument out of range. P Value: " + p);
                 },
-                formatNumber(value) {
-                    return numeral(value).format('0,0[.][00000]');
+                formatNumber(value, percent) {
+                    return numeral(value).format(percent ? '0,0[.][000]%' : '0,0[.][00000]');
                 },
-                formatInput(target, addPercent) {
-                    this[target] = this.formatNumber(this[target]) + (addPercent ? '%' : '')
+                formatInput(target, percent) {
+                    if (percent) {
+                        this[target] = numeral(this[target].toString().slice(0, this[target].length - 1)).value() + '%'
+                    } else {
+                        this[target] = this.formatNumber(numeral(this[target]).value())
+                    }
                 },
                 deformatInput(target, percent) {
-                    this[target] = numeral(this[target]).value() * (percent ? 100 : 1)
+                    if (percent) {
+                        this[target] = numeral(this[target]).value() * 100 + '%'
+                    } else {
+                        this[target] = numeral(this[target]).value()
+                    }
                 },
-                updateInput(ev, target) {
-                    this[target] = ev.target.value.trim()
+                updateInput(ev, target, percent) {
+                    let val
+                    if (percent) {
+                        val = ev.target.value
+                        val = val.replaceAll('%', '')
+                        if (!val.endsWith('%')) {
+                            val = val + '%'
+                        }
+                        if (numeral(val).value() >= 1) {
+                            val = '99%'
+                        }
+                    } else {
+                        val = ev.target.value
+                    }
+                    this[target] = val
                 }
             },
             directives: {
@@ -254,24 +291,43 @@
                         const vm = vnode.ctx.parent.ctx;
                         vm.formatInput(propertyName, binding.modifiers.percent)
                         el = el.querySelector('div').querySelector('input')
-                        console.log(el)
 
                         el.value = vm[propertyName];
 
 
                         el.addEventListener('input', (ev) => {
-                            vm.updateInput(ev, propertyName)
+                            vm.updateInput(ev, propertyName, binding.modifiers.percent)
+                            el.value = vm[propertyName];
+
+                            if (binding.modifiers.percent) {
+                                if(ev.target.selectionStart == ev.target.value.length) {
+                                    requestAnimationFrame(() => {
+                                        const end = ev.target.value.length - 1; // Move the cursor before the last character
+                                        ev.target.setSelectionRange(end, end);
+                                    });
+                                }
+                            }
                         })
 
                         el.addEventListener('blur', () => {
+                            if(el.value == '%') {
+                                el.value = '1%'
+                            }
                             vm.formatInput(propertyName, binding.modifiers.percent);
                             el.value = vm[propertyName];
                         })
 
-                        el.addEventListener('focus', () => {
+                        el.addEventListener('focus', (ev) => {
+                            if (binding.modifiers.percent) {
+                                // Ensure the cursor moves to the position just before the last character
+                                requestAnimationFrame(() => {
+                                    const end = ev.target.value.length - 1; // Move the cursor before the last character
+                                    ev.target.setSelectionRange(end, end);
+                                });
+                            }
                             vm.deformatInput(propertyName, binding.modifiers.percent);
                             el.value = vm[propertyName];
-                        })
+                        });
                     }
                 }
             }
