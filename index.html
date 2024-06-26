@@ -75,9 +75,10 @@
             </div>
         </div>
         <!-- Output fields for results with Bonferroni-adjustments -->
-        <div v-if="numberoftestvariants > 1" class="row form-group form-control" style="display: flex;">
+        <div v-show="numberoftestvariants > 1" class="row form-group form-control" style="display: flex;">
             <div class="col-12 col-sm-6 form-control variant-column variant-column-right">
                 <h3>Sample size with Bonferroni-adjustments</h3>
+                <i class="fa-regular fa-circle-question" data-bs-toggle="tooltip" data-bs-html="true" title="Bonferroni-adjustments explanation" data-bs-placement="right"></i>
                 <output-field title="Estimated Test Average Value:" :output-value="formatNumber(estimatedTestAverage)"
                     error-message="Not enough data to calculate Estimated Test Average Value"></output-field>
                 <output-field title="Sample Size Required Per Recipe:"
@@ -93,6 +94,7 @@
             <!-- Output fields for results without Bonferroni-adjustments -->
             <div class="col-12 col-sm-6 form-control variant-column variant-column-left">
                 <h3>Sample size without Bonferroni-adjustments</h3>
+                <i class="fa-regular fa-circle-question" data-bs-toggle="tooltip" data-bs-html="true" title="Bonferroni-adjustments explanation" data-bs-placement="right"></i>
                 <output-field title="Estimated Test Average Value:" :output-value="formatNumber(estimatedTestAverage)"
                     error-message="Not enough data to calculate Estimated Test Average Value"></output-field>
                 <output-field title="Sample Size Required Per Recipe:"
@@ -107,7 +109,7 @@
             </div>
         </div>
         <!-- Output fields for results when there is one or no test variant -->
-        <div v-if="numberoftestvariants <= 1" class="row form-group form-control" style="display: flex;">
+        <div v-show="numberoftestvariants <= 1" class="row form-group form-control" style="display: flex;">
             <h3 style="text-align: center; padding: 0;">Required sample size</h3>
             <div class="col-12 col-sm-6 form-control variant-column variant-column-right">
                 <output-field title="Estimated Test Average Value:" :output-value="formatNumber(estimatedTestAverage)"
@@ -121,13 +123,14 @@
                     :output-value="formatNumber(totalSampleSizeReq, false, true)"
                     error-message="Not enough data to calculate Total Sample Size Required"></output-field>
                 <output-field title="Estimated Duration:" :output-value="estimatedDuration"
-                    error-message="Not enough data to calculate Estimated Duration"></output-field>
+                    error-message="Not enough data to calculate Estimated Duration" tooltip="test"></output-field>
             </div>
         </div>
     </div>
 
     <script>
         const { createApp } = Vue;
+
 
         const app = createApp({
             data() {
@@ -397,11 +400,11 @@
         // Output field component
         app.component('output-field', {
             template: `<div class="form-control" style="margin-bottom: 10px;">
-                        <p>{{ title }}</p>
+                        <p>{{ title }} <i class="fa-regular fa-circle-question" data-bs-toggle="tooltip" data-bs-html="true" :title="tooltip" data-bs-placement="right"></i></p> 
                         <p>{{ errorCheck }}</p>
                     </div>`,
             props: [
-                'title', 'outputValue', 'errorMessage'
+                'title', 'outputValue', 'errorMessage', 'tooltip'
             ],
             computed: {
                 errorCheck() {
@@ -413,7 +416,6 @@
 
         app.mount('#app');
     </script>
-
 </body>
 
 </html>
