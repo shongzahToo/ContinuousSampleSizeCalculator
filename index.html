@@ -8,10 +8,18 @@
 </head>
 
 <body>
+    <!-- Font Awesome icons -->
     <script src="https://kit.fontawesome.com/365c579566.js" crossorigin="anonymous"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <!-- Vue.js -->
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <!-- Numeral.js for formatting numbers -->
     <script src="//cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
     <style>
         .row {
@@ -39,14 +47,17 @@
         }
     </style>
     <div id="app" class="container">
-
+        <!-- Form for input fields -->
         <div class="row form-group form-control" style="display: flex;">
             <div class="col-12 col-sm-6">
-                <input-field title="Confidence ( 1 - &alpha; ):" v-setup-component-input:confidence.percent tooltip=""></input-field>
+                <input-field title="Confidence ( 1 - &alpha; ):" v-setup-component-input:confidence.percent
+                    tooltip=""></input-field>
                 <input-field title="Power:" v-setup-component-input:power.percent></input-field>
-                <input-field title="Estimated Lift Percentage:" v-setup-component-input:mde.percent tooltip=""></input-field>
+                <input-field title="Estimated Lift Percentage:" v-setup-component-input:mde.percent
+                    tooltip=""></input-field>
                 <div class="form-group row">
-                    <label>Tails (1 or 2): <i class="fa-regular fa-circle-question" data-bs-toggle="tooltip" data-bs-html="true" title="test" data-bs-placement="right"></i></label>
+                    <label>Tails (1 or 2): <i class="fa-regular fa-circle-question" data-bs-toggle="tooltip"
+                            data-bs-html="true" title="test" data-bs-placement="right"></i></label>
                     <div class="col-12 mb-3">
                         <select class="form-control input no-sup" v-model.trim="tailsFormatted">
                             <option value="1">1</option>
@@ -63,65 +74,60 @@
                 <input-field title="Daily Traffic (optional):" v-setup-component-input:dailytrafic></input-field>
             </div>
         </div>
-
+        <!-- Output fields for results with Bonferroni-adjustments -->
         <div v-if="numberoftestvariants > 1" class="row form-group form-control" style="display: flex;">
             <div class="col-12 col-sm-6 form-control variant-column variant-column-right">
                 <h3>Sample size with Bonferroni-adjustments</h3>
-                <output-field title="Estimated Test Average:"
-                    :output-value="formatNumber(estimatedTestAverage)"></output-field>
+                <output-field title="Estimated Test Average:" :output-value="formatNumber(estimatedTestAverage)"
+                    error-message="Not enough data to calculate Estimated Test Average"></output-field>
                 <output-field title="Sample Size Required Per Recipe:"
-                    :output-value="formatNumber(Math.ceil(sampleSizeReqPerRecipeBON))"></output-field>
+                    :output-value="formatNumber(sampleSizeReqPerRecipe, false, true)"
+                    error-message="Not enough data to calculate Sample Size Required Per Recipe"></output-field>
                 <output-field title="Total Sample Size Required:"
-                    :output-value="formatNumber(Math.ceil(totalSampleSizeReqBON))"></output-field>
-                <output-field title="Estimated Duration:" :output-value="estimatedDurationBON"></output-field>
+                    :output-value="formatNumber(totalSampleSizeReq, false, true)"
+                    error-message="Not enough data to calculate Total Sample Size Required"></output-field>
+                <output-field title="Estimated Duration:" :output-value="estimatedDuration"
+                    error-message="Not enough data to calculate Estimated Duration"></output-field>
+
             </div>
+            <!-- Output fields for results without Bonferroni-adjustments -->
             <div class="col-12 col-sm-6 form-control variant-column variant-column-left">
                 <h3>Sample size without Bonferroni-adjustments</h3>
-                <output-field title="Estimated Test Average:"
-                    :output-value="formatNumber(estimatedTestAverage)"></output-field>
+                <output-field title="Estimated Test Average:" :output-value="formatNumber(estimatedTestAverage)"
+                    error-message="Not enough data to calculate Estimated Test Average"></output-field>
                 <output-field title="Sample Size Required Per Recipe:"
-                    :output-value="formatNumber(Math.ceil(sampleSizeReqPerRecipe))"></output-field>
+                    :output-value="formatNumber(sampleSizeReqPerRecipe, false, true)"
+                    error-message="Not enough data to calculate Sample Size Required Per Recipe"></output-field>
                 <output-field title="Total Sample Size Required:"
-                    :output-value="formatNumber(Math.ceil(totalSampleSizeReq))"></output-field>
-                <output-field title="Estimated Duration:" :output-value="estimatedDuration"></output-field>
+                    :output-value="formatNumber(totalSampleSizeReq, false, true)"
+                    error-message="Not enough data to calculate Total Sample Size Required"></output-field>
+                <output-field title="Estimated Duration:" :output-value="estimatedDuration"
+                    error-message="Not enough data to calculate Estimated Duration"></output-field>
+
             </div>
         </div>
-
+        <!-- Output fields for results when there is one or no test variant -->
         <div v-if="numberoftestvariants <= 1" class="row form-group form-control" style="display: flex;">
             <h3 style="text-align: center; padding: 0;">Required sample size</h3>
             <div class="col-12 col-sm-6 form-control variant-column variant-column-right">
-                <output-field title="Estimated Test Average:"
-                    :output-value="formatNumber(estimatedTestAverage)"></output-field>
+                <output-field title="Estimated Test Average:" :output-value="formatNumber(estimatedTestAverage)"
+                    error-message="Not enough data to calculate Estimated Test Average"></output-field>
                 <output-field title="Sample Size Required Per Recipe:"
-                    :output-value="formatNumber(Math.ceil(sampleSizeReqPerRecipe))"></output-field>
+                    :output-value="formatNumber(sampleSizeReqPerRecipe, false, true)"
+                    error-message="Not enough data to calculate Sample Size Required Per Recipe"></output-field>
             </div>
             <div class="col-12 col-sm-6 form-control variant-column variant-column-left">
                 <output-field title="Total Sample Size Required:"
-                    :output-value="formatNumber(Math.ceil(totalSampleSizeReq))"></output-field>
-                <output-field title="Estimated Duration:" :output-value="estimatedDuration"></output-field>
+                    :output-value="formatNumber(totalSampleSizeReq, false, true)"
+                    error-message="Not enough data to calculate Total Sample Size Required"></output-field>
+                <output-field title="Estimated Duration:" :output-value="estimatedDuration"
+                    error-message="Not enough data to calculate Estimated Duration"></output-field>
             </div>
         </div>
-
     </div>
 
     <script>
-        const { createApp } = Vue
-
-        document.addEventListener('keypress', (ev) => {
-            if (ev.code == 'Enter') {
-                if (!document.activeElement.className.includes('no-sup')) {
-                    ev.preventDefault()
-                    var inputs = Array.from(document.getElementsByClassName('input'));
-                    var currentInputIndex = inputs.indexOf(ev.target);
-
-                    if (currentInputIndex !== -1 && currentInputIndex < inputs.length - 1) {
-                        inputs[currentInputIndex + 1].focus();
-                    } else if (currentInputIndex => inputs.length - 1) {
-                        inputs[0].focus();
-                    }
-                }
-            }
-        })
+        const { createApp } = Vue;
 
         const app = createApp({
             data() {
@@ -138,33 +144,37 @@
             },
             computed: {
                 confidence() {
-                    let val = numeral(this.confidenceFormatted).value()
-                    if (val == 0 || val == undefined) {
-                        return 0.001
-                    } else {
-                        return val
-                    }
+                    if(!this.confidenceFormatted) {return null}
+                    let val = numeral(this.confidenceFormatted).value();
+                    return val || 0.001;
                 },
                 power() {
-                    return numeral(this.powerFormatted).value()
+                    if(!this.confidenceFormatted) {return null}
+                    return numeral(this.powerFormatted).value();
                 },
                 mde() {
-                    return numeral(this.mdeFormatted).value()
+                    if(!this.confidenceFormatted) {return null}
+                    return numeral(this.mdeFormatted).value();
                 },
                 tails() {
-                    return numeral(this.tailsFormatted).value()
+                    if(!this.tailsFormatted) {return null}
+                    return numeral(this.tailsFormatted).value();
                 },
                 numberoftestvariants() {
-                    return numeral(this.numberoftestvariantsFormatted).value()
+                    if(!this.numberoftestvariantsFormatted) {return null}
+                    return numeral(this.numberoftestvariantsFormatted).value();
                 },
                 meanvalue() {
-                    return numeral(this.meanvalueFormatted).value()
+                    if(!this.meanvalueFormatted) {return null}
+                    return numeral(this.meanvalueFormatted).value();
                 },
                 standarddeviation() {
-                    return numeral(this.standarddeviationFormatted).value()
+                    if(!this.standarddeviationFormatted) {return null}
+                    return numeral(this.standarddeviationFormatted).value();
                 },
                 dailytrafic() {
-                    return numeral(this.dailytraficFormatted).value()
+                    if(!this.dailytraficFormatted) {return null}
+                    return numeral(this.dailytraficFormatted).value();
                 },
                 zAlpha() {
                     const tailProbability = (1 - this.confidence) / this.tails;
@@ -174,33 +184,57 @@
                     return this.NORMSINV(this.power);
                 },
                 estimatedTestAverage() {
+                    if (!this.meanvalue || !this.mde) {
+                        return null;
+                    }
                     return this.meanvalue * (1 + this.mde);
                 },
                 sampleSizeReqPerRecipe() {
+                    if (!this.zAlpha || !this.zBeta || !this.standarddeviation || !this.meanvalue || !this.estimatedTestAverage) {
+                        return null;
+                    }
                     return Math.pow(this.zAlpha + this.zBeta, 2) * 2 * Math.pow(this.standarddeviation, 2) / Math.pow(this.estimatedTestAverage - this.meanvalue, 2);
                 },
                 totalSampleSizeReq() {
-                    return this.sampleSizeReqPerRecipe * (this.numberoftestvariants + 1);
+                    const sampleSize = this.sampleSizeReqPerRecipe;
+                    if (!sampleSize || !this.numberoftestvariants) {
+                        return null;
+                    }
+                    return sampleSize * (this.numberoftestvariants + 1);
                 },
                 estimatedDuration() {
-                    return (this.dailytrafic == 0 || this.dailytrafic == '') ? 'You must input a daily traffic value to receive an estimated duration' : this.formatNumber(Math.ceil(this.totalSampleSizeReq / this.dailytrafic)) + ' Days';
+                    if (!this.dailytrafic || !this.totalSampleSizeReq) {
+                        return null;
+                    }
+                    return this.dailytrafic == 0 ? 'You must input a daily traffic value to receive an estimated duration' : this.formatNumber(Math.ceil(this.totalSampleSizeReq / this.dailytrafic)) + ' Days';
                 },
                 zAlphaBON() {
                     const tailProbability = (1 - this.confidence) / this.tails / this.numberoftestvariants;
                     return this.NORMSINV(1 - tailProbability);
                 },
                 sampleSizeReqPerRecipeBON() {
+                    if (!this.zAlphaBON || !this.zBeta || !this.standarddeviation || !this.meanvalue || !this.estimatedTestAverage) {
+                        return null;
+                    }
                     return Math.pow(this.zAlphaBON + this.zBeta, 2) * 2 * Math.pow(this.standarddeviation, 2) / Math.pow(this.estimatedTestAverage - this.meanvalue, 2);
                 },
                 totalSampleSizeReqBON() {
-                    return this.sampleSizeReqPerRecipeBON * (this.numberoftestvariants + 1);
+                    const sampleSize = this.sampleSizeReqPerRecipeBON;
+                    if (!sampleSize || !this.numberoftestvariants) {
+                        return null;
+                    }
+                    return sampleSize * (this.numberoftestvariants + 1);
                 },
                 estimatedDurationBON() {
-                    return (this.dailytrafic == 0 || this.dailytrafic == '') ? 'You must input a daily traffic value to receive an estimated duration' : this.formatNumber(Math.ceil(this.totalSampleSizeReqBON / this.dailytrafic)) + ' Days';
+                    if (!this.dailytrafic || !this.totalSampleSizeReqBON) {
+                        return null;
+                    }
+                    return this.dailytrafic == 0 ? 'You must input a daily traffic value to receive an estimated duration' : this.formatNumber(Math.ceil(this.totalSampleSizeReqBON / this.dailytrafic)) + ' Days';
                 }
             },
             methods: {
                 NORMSINV(p) {
+                    // NORMSINV implementation to calculate the inverse standard normal distribution function for a specified value
                     const a1 = -3.969683028665376e+01;
                     const a2 = 2.209460984245205e+02;
                     const a3 = -2.759285104469687e+02;
@@ -246,17 +280,29 @@
                     }
                     throw new Error("Argument out of range. P Value: " + p);
                 },
-                formatNumber(value, percent) {
+                formatNumber(value, percent, ceil) {
+                    if(!value) {
+                        return null
+                    }
+                    if(ceil) {
+                        value = Math.ceil(value)
+                    }
                     return numeral(value).format(percent ? '0,0[.][000]%' : '0,0[.][00000]');
                 },
                 formatInput(target, percent) {
-                    if (percent) {
+                    // handling the input events
+                    if(this[target] == '') {
+                        if(!percent) {
+                            this[target] == ''
+                        }
+                    } else if (percent) {
                         this[target] = numeral(this[target].toString().slice(0, this[target].length - 1)).value() + '%'
                     } else {
                         this[target] = this.formatNumber(numeral(this[target]).value())
                     }
                 },
                 deformatInput(target, percent) {
+                    //deformatting input when the user enters the input field to avoid awkward commas and stuff
                     if (percent) {
                         this[target] = numeral(this[target]).value() * 100 + '%'
                     } else {
@@ -264,6 +310,7 @@
                     }
                 },
                 updateInput(ev, target, percent) {
+                    // mostely for percent handling but also to update values of cells because they switch between formatted and unformatted variations
                     let val
                     if (percent) {
                         val = ev.target.value
@@ -284,19 +331,18 @@
                 setupComponentInput: {
                     mounted(el, binding, vnode) {
                         const propertyName = binding.arg + 'Formatted';
-                        const vm = vnode.ctx.parent.ctx;
+                        const vm = vnode.ctx.parent.ctx; // vm used to access the vue apps data outside of the app or when it wouldn't normally be accessible
                         vm.formatInput(propertyName, binding.modifiers.percent)
                         el = el.querySelector('div').querySelector('input')
 
                         el.value = vm[propertyName];
 
-
                         el.addEventListener('input', (ev) => {
                             vm.updateInput(ev, propertyName, binding.modifiers.percent)
                             el.value = vm[propertyName];
 
-                            if (binding.modifiers.percent) {
-                                if(ev.target.selectionStart == ev.target.value.length) {
+                            if (binding.modifiers.percent) { //handles the some of the cursor placement when the percent modifier is active
+                                if (ev.target.selectionStart == ev.target.value.length) {
                                     requestAnimationFrame(() => {
                                         const end = ev.target.value.length - 1; // Move the cursor before the last character
                                         ev.target.setSelectionRange(end, end);
@@ -305,8 +351,8 @@
                             }
                         })
 
-                        el.addEventListener('blur', () => {
-                            if(el.value == '%') {
+                        el.addEventListener('blur', () => { //reformatting inputs when the user leaves the cell
+                            if (el.value == '%') {
                                 el.value = '1%'
                             }
                             vm.formatInput(propertyName, binding.modifiers.percent);
@@ -331,34 +377,43 @@
                 const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
                 const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
             }
-        })
+        });
 
-
+        // Input field component
         app.component('input-field', {
             template: `<div class="form-group row" v-setup-component-input:confidence.percent>
-                            <label>{{ title }} <i class="fa-regular fa-circle-question" data-bs-toggle="tooltip" data-bs-html="true" :title="tooltip" data-bs-placement="right"></i></label>
-                            <div class="col-12 mb-3">
-                                <input type="text" class="form-control input"/>
-                            </div>
+                        <label>{{ title }} <i class="fa-regular fa-circle-question" data-bs-toggle="tooltip" data-bs-html="true" :title="tooltip" data-bs-placement="right"></i></label>
+                        <div class="col-12 mb-3">
+                            <input type="text" class="form-control input"/>
                         </div>
-                        `,
+                    </div>
+                    `,
             props: [
                 'title',
                 'tooltip'
             ]
-        })
+        });
 
+        // Output field component
         app.component('output-field', {
             template: `<div class="form-control" style="margin-bottom: 10px;">
-                            <p>{{ title }}</p>
-                            <p>{{ outputValue }}</p>
-                        </div>`,
+                        <p>{{ title }}</p>
+                        <p>{{ errorCheck }}</p>
+                    </div>`,
             props: [
-                'title', 'outputValue'
-            ]
-        })
-        app.mount('#app')
+                'title', 'outputValue', 'errorMessage'
+            ],
+            computed: {
+                errorCheck() {
+                    console.log(this.outputValue)
+                    return !this.outputValue ? this.errorMessage : this.outputValue
+                }
+            }
+        });
+
+        app.mount('#app');
     </script>
+
 </body>
 
 </html>
