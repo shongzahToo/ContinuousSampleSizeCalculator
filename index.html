@@ -53,7 +53,7 @@
                 <input-field title="Confidence ( 1 - &alpha; ):" v-setup-component-input:confidence.percent
                     tooltip=""></input-field>
                 <input-field title="Power:" v-setup-component-input:power.percent></input-field>
-                <input-field title="Estimated Lift Percentage:" v-setup-component-input:mde.percent
+                <input-field title="MDE:" v-setup-component-input:mde.percent
                     tooltip=""></input-field>
                 <div class="form-group row">
                     <label>Tails (1 or 2): <i class="fa-regular fa-circle-question" data-bs-toggle="tooltip"
@@ -78,8 +78,8 @@
         <div v-if="numberoftestvariants > 1" class="row form-group form-control" style="display: flex;">
             <div class="col-12 col-sm-6 form-control variant-column variant-column-right">
                 <h3>Sample size with Bonferroni-adjustments</h3>
-                <output-field title="Estimated Test Average:" :output-value="formatNumber(estimatedTestAverage)"
-                    error-message="Not enough data to calculate Estimated Test Average"></output-field>
+                <output-field title="Estimated Test Average Value:" :output-value="formatNumber(estimatedTestAverage)"
+                    error-message="Not enough data to calculate Estimated Test Average Value"></output-field>
                 <output-field title="Sample Size Required Per Recipe:"
                     :output-value="formatNumber(sampleSizeReqPerRecipe, false, true)"
                     error-message="Not enough data to calculate Sample Size Required Per Recipe"></output-field>
@@ -93,8 +93,8 @@
             <!-- Output fields for results without Bonferroni-adjustments -->
             <div class="col-12 col-sm-6 form-control variant-column variant-column-left">
                 <h3>Sample size without Bonferroni-adjustments</h3>
-                <output-field title="Estimated Test Average:" :output-value="formatNumber(estimatedTestAverage)"
-                    error-message="Not enough data to calculate Estimated Test Average"></output-field>
+                <output-field title="Estimated Test Average Value:" :output-value="formatNumber(estimatedTestAverage)"
+                    error-message="Not enough data to calculate Estimated Test Average Value"></output-field>
                 <output-field title="Sample Size Required Per Recipe:"
                     :output-value="formatNumber(sampleSizeReqPerRecipe, false, true)"
                     error-message="Not enough data to calculate Sample Size Required Per Recipe"></output-field>
@@ -110,8 +110,8 @@
         <div v-if="numberoftestvariants <= 1" class="row form-group form-control" style="display: flex;">
             <h3 style="text-align: center; padding: 0;">Required sample size</h3>
             <div class="col-12 col-sm-6 form-control variant-column variant-column-right">
-                <output-field title="Estimated Test Average:" :output-value="formatNumber(estimatedTestAverage)"
-                    error-message="Not enough data to calculate Estimated Test Average"></output-field>
+                <output-field title="Estimated Test Average Value:" :output-value="formatNumber(estimatedTestAverage)"
+                    error-message="Not enough data to calculate Estimated Test Average Value"></output-field>
                 <output-field title="Sample Size Required Per Recipe:"
                     :output-value="formatNumber(sampleSizeReqPerRecipe, false, true)"
                     error-message="Not enough data to calculate Sample Size Required Per Recipe"></output-field>
